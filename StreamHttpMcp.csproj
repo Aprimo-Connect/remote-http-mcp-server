@@ -1,0 +1,35 @@
+<!-- ============================================================================
+     STREAMABLE HTTP MCP PROJECT FILE - MINIMAL DEPENDENCIES
+     ============================================================================
+     This project is focused on MCP streaming capabilities.
+     Minimal dependencies - only what's needed for MCP HTTP transport. -->
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Sdk="Microsoft.NET.Sdk.Web" - Still needed for HTTP transport
+       But we're not using MVC, controllers, or Swagger -->
+
+  <!-- ============================================================================
+       PROJECT PROPERTIES - BASIC CONFIGURATION
+       ============================================================================ -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- ============================================================================
+       MINIMAL PACKAGE DEPENDENCIES - MCP ONLY
+       ============================================================================
+       Only the MCP package needed - no MVC, no Swagger, no OpenAPI -->
+  
+  <ItemGroup>
+    <!-- ModelContextProtocol.AspNetCore - MCP for HTTP streaming
+         This is the only dependency we need for our PoC -->
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.0-preview.1" />
+    <PackageReference Include="ModelContextProtocol.Core" Version="0.4.0-preview.2" />
+    <!-- OAuth/JWT Authentication packages -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+  </ItemGroup>
+
+
+</Project>
