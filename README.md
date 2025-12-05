@@ -215,6 +215,22 @@ curl -X POST http://localhost:5000/connect/register \
   }'
 ```
 
+## Example Azure Web App Deployment (Zip Deployment)
+
+### Build and Publish
+```bash
+dotnet build
+dotnet publish -c Release
+```
+### Compress
+```bash
+Compress-Archive -Path bin/Release/net8.0/publish/* -DestinationPath publish.zip -Force
+```
+### Deploy To Azure Web App
+```bash
+az webapp deployment source config-zip --resource-group <your-resource-group> --name <your-web-app-name> --src ./publish.zip
+```
+
 ## How Authentication Works
 
 This project implements an **OAuth proxy pattern** where the server acts as both an OAuth proxy (intermediary for authentication) and a protected resource server (hosting the MCP endpoint). The proxy sits between AI clients and the enterprise authorization server, performing request transformation and compatibility bridging.
@@ -376,25 +392,6 @@ The server provides MCP tools that AI assistants can use:
 - **Audit Logging**: Comprehensive logging of all authentication requests
 - **HTTPS Enforcement**: Requires HTTPS in production environments
 
-## Project Structure
-
-```
-remote-http-mcp-server/
-├── Controllers/
-│   └── OAuthMetadataController.cs    # OAuth proxy endpoints
-├── Middleware/
-│   ├── McpOAuthMiddleware.cs         # OAuth scope enforcement
-│   └── RequestLoggingMiddleware.cs   # Request logging
-├── Services/
-│   ├── AprimoService.cs              # Aprimo API integration
-│   └── RequestLoggingService.cs      # Logging service
-├── Tools/
-│   ├── AprimoTool.cs                 # MCP tools for Aprimo
-│   └── EchoTool.cs                   # Example MCP tool
-├── Program.cs                        # Application startup
-├── appsettings.json                  # Configuration
-└── README.md                         # This file
-```
 
 ## Additional Resources
 
