@@ -402,7 +402,9 @@ public class OAuthMetadataController : ControllerBase
             }
         }
 
-        var targetUrl = "https://productstrategy1.aprimo.com/login/connect/authorize";
+        var aprimoDomain = _configuration["Aprimo:Domain"] ?? 
+            throw new InvalidOperationException("Aprimo:Domain configuration is required");
+        var targetUrl = $"https://{aprimoDomain}.aprimo.com/login/connect/authorize";
         if (queryParams.Count > 0)
         {
             var queryString = "?" + string.Join("&", queryParams);
@@ -511,7 +513,9 @@ public class OAuthMetadataController : ControllerBase
             }
         }
 
-        var targetUrl = "https://productstrategy1.aprimo.com/login/connect/token";
+        var aprimoDomain = _configuration["Aprimo:Domain"] ?? 
+            throw new InvalidOperationException("Aprimo:Domain configuration is required");
+        var targetUrl = $"https://{aprimoDomain}.aprimo.com/login/connect/token";
         if (filteredQueryParams.Count > 0)
         {
             var queryString = "?" + string.Join("&", filteredQueryParams);
