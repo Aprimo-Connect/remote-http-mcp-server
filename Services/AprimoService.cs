@@ -95,6 +95,36 @@ public class AprimoService
             }
             
             var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Parse the JSON response and add deep links to each record
+            try
+            {
+                var jsonNode = JsonNode.Parse(responseContent);
+                if (jsonNode != null && jsonNode["items"] is JsonArray itemsArray)
+                {
+                    foreach (var item in itemsArray)
+                    {
+                        if (item != null && item["id"] is JsonValue recordIdNode)
+                        {
+                            var recordId = recordIdNode.GetValue<string>();
+                            if (!string.IsNullOrEmpty(recordId))
+                            {
+                                item["deepLink"] = $"{_baseDamUrl}/dam/contentitems/{recordId}";
+                            }
+                        }
+                    }
+                    
+                    return jsonNode.ToJsonString(new JsonSerializerOptions { WriteIndented = false });
+                }
+            }
+            catch(Exception ex)
+            {
+                // If JSON parsing fails, return original response
+                Console.WriteLine($"[APRIMO SERVICE] Failed to parse or modify search results JSON: {ex.Message}");
+                Console.WriteLine($"[APRIMO SERVICE] Exception details: {ex}");
+            }
+            
+            // Return original response if we can't parse or modify it
             return responseContent;
         }
         catch (Exception ex)
