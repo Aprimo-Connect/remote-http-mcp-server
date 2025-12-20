@@ -17,10 +17,16 @@ namespace StreamHttpMcp.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestLoggingService loggingService)
+        public async Task InvokeAsync(HttpContext context, RequestLoggingService loggingService, McpCallLoggingService mcpLoggingService)
         {
             // Log the incoming request
             await LogRequestAsync(context, loggingService);
+
+             // Log MCP calls to dedicated log file
+            if (context.Request.Path.StartsWithSegments("/mcp"))
+            {
+                await LogMcpCallAsync(context, mcpLoggingService);
+            }
             
             // Capture the response
             await LogResponseAsync(context, loggingService);
@@ -50,6 +56,32 @@ namespace StreamHttpMcp.Middleware
                 _logger.LogError(ex, "Error in request logging middleware");
             }
         }
+
+        private async Task LogMcpCallAsync(HttpContext context, McpCallLoggingService mcpLoggingService)
+        {
+            try
+            {
+                // Enable buffering to read the request body (if not already done)
+                context.Request.EnableBuffering();
+                
+                // Read the request body
+                string requestBody = string.Empty;
+                if (context.Request.ContentLength > 0)
+                {
+                    using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true);
+                    requestBody = await reader.ReadToEndAsync();
+                    context.Request.Body.Position = 0; // Reset position for next middleware
+                }
+
+                // Log the MCP call
+                await mcpLoggingService.LogMcpCallAsync(context, requestBody);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in MCP call logging middleware");
+            }
+        }
+
 
         private async Task LogResponseAsync(HttpContext context, RequestLoggingService loggingService)
         {

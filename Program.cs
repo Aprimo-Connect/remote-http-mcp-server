@@ -179,6 +179,7 @@ builder.Services.AddMcpServer()
     .WithToolsFromAssembly();   // Auto-discover MCP tools
 
 builder.Services.AddScoped<RequestLoggingService>();
+builder.Services.AddScoped<McpCallLoggingService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient<AprimoService>((serviceProvider, httpClient) =>
