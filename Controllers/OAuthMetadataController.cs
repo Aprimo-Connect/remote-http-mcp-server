@@ -454,6 +454,8 @@ public class OAuthMetadataController : ControllerBase
         var claudeClientSecret = _configuration["OAuth:ClaudeClientSecret"];
         var vsCodeClientId = _configuration["OAuth:VSCodeClientID"];
         var vsCodeClientSecret = _configuration["OAuth:VSCodeClientSecret"];
+        var coPilotClientId = _configuration["OAuth:CoPilotClientID"];
+        var coPilotClientSecret = _configuration["OAuth:CoPilotClientSecret"];
         string? clientSecretToInject = null;
         string? detectedClientName = null;
         
@@ -470,6 +472,12 @@ public class OAuthMetadataController : ControllerBase
                 clientSecretToInject = vsCodeClientSecret;
                 detectedClientName = "Visual Studio Code";
                 _logger.LogInformation("[{Timestamp}] Detected Visual Studio Code client (client_id: {ClientId}), will inject client_secret", timestamp, clientId);
+            }
+        else if (!string.IsNullOrEmpty(coPilotClientId) && clientId.Equals(coPilotClientId, StringComparison.OrdinalIgnoreCase))
+            {
+                clientSecretToInject = coPilotClientSecret;
+                detectedClientName = "Credential Manager";
+                _logger.LogInformation("[{Timestamp}] Detected CoPilot client (client_id: {ClientId}), will inject client_secret", timestamp, clientId);
             }
         }
         
@@ -679,6 +687,12 @@ public class OAuthMetadataController : ControllerBase
                 clientId = _configuration["OAuth:VSCodeClientID"];
                 clientSecret = _configuration["OAuth:VSCodeClientSecret"];
                 _logger.LogInformation("[{Timestamp}] Detected client_name 'Visual Studio Code', using VSCodeClientID: {ClientId}", timestamp, clientId);
+            }
+            else if (string.Equals(clientName, "Credential Manager", StringComparison.OrdinalIgnoreCase))
+            {
+                clientId = _configuration["OAuth:CoPilotClientID"];
+                clientSecret = _configuration["OAuth:CoPilotClientSecret"];
+                _logger.LogInformation("[{Timestamp}] Detected client_name 'Credential Manager', using CoPilotClientID: {ClientId}", timestamp, clientId);
             }
             else
             {
