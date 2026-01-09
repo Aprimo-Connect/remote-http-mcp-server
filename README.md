@@ -46,6 +46,8 @@ All configuration is done through `appsettings.json`. The following settings are
     "ClaudeClientSecret": "your-claude-client-secret",
     "VSCodeClientID": "your-vscode-client-id",
     "VSCodeClientSecret": "your-vscode-client-secret",
+    "CoPilotClientID":"your-copilot-client-id",
+    "CoPilotClientSecret":"your-copilot-client-secret",
     "Authority": "https://your-domain.aprimo.com/login/connect/authorize",
     "Audience": "your-domain.aprimo.com",
     "RequireHttps": true,
